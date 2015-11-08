@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 import hashlib
+import uuid
+import os
 import time
+from sorl.thumbnail import get_thumbnail
 
 
 class PhotoUser(models.Model):
@@ -23,26 +26,33 @@ class PhotoUser(models.Model):
 
 class Like(models.Model):
     post = models.ForeignKey("Post")
-    user = models.ForeignKey("User")
+    user = models.ForeignKey(User)
 
+    class Meta:
+        unique_together = ("post", "user")
 
 class Post(models.Model):
-    thumb = models.ImageField(upload_to='thumb/')
-    origin = models.ImageField(upload_to='o/')
+    origin = models.ImageField(upload_to='o/', blank=True, null=True)
+    body = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True, auto_created=True)
     likes_count = models.IntegerField(default=0)
     user = models.ForeignKey(User)
+
+    def get_thumb(self):
+        return get_thumbnail(settings.MEDIA_ROOT + self.origin.url, "256x256", crop="center")
 
     def toggle_like(self, user):
         try:
             like = self.like_set.get(user=user)
             like.delete()
             self.likes_count -= 1
+            self.save()
             return True
         except Like.DoesNotExist:
             self.like_set.create(user=user)
             self.likes_count += 1
+            self.save()
             return False
 
 
@@ -53,3 +63,6 @@ class Comment(models.Model):
     user = models.ForeignKey(User)
     post = models.ForeignKey(Post)
 
+class Template(models.Model):
+    name = models.CharField(max_length=200)
+    origin = models.ImageField(upload_to='tpl/', blank=True, null=True)

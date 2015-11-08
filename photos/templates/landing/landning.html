@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>100грамм</title>
+
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/landing.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+        <div class="inner cover">
+            <div class="row">
+            <div class="col-sm-4 col-md-6 hidden-xs">
+                <img src="{{ STATIC_URL }}img/nexus5.png" class="phoneimg img-responsive">
+            </div>
+            <div class="col-md-6 description">
+                <h1>Стограм</h1>
+
+                <p>8 ноября 2015 года свет увидел Стограм</p>
+                <p>Приложение, меняющее представление о создании контента на мобильных устройствах
+                Студенты Массачусетского технологического института выложили своими телами гигантскую свастику</p>
+                <div class="loginbutton">
+                    <button class="btn btn-sm btn-vk vk_auth_url">Вход через ВКонтакте</button>
+                </div>
+                <div class="storesblock">
+                    <img src="{{ STATIC_URL }}img/gplay.png">
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+    <script src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script>
+        $(".vk_auth_url").click(function(){
+            window.location = '{{ vk_auth_url | safe }}'
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Добавление шаблонов</title>
+
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/landing.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="drag-and-drop" id="dropZone">
+        Перетащите сюда файлы
+    </div>
+    <script src="{{ STATIC_URL }}js/jquery-1.11.3.min.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var dropZone = $('#dropZone'),
+                maxFileSize = 1000000; // максимальный размер файла - 1 мб.
+            dropZone[0].ondragover = function() {
+                dropZone.addClass('hover');
+                return false;
+            };
+            dropZone[0].ondragleave = function() {
+                dropZone.removeClass('hover');
+                return false;
+            };
+            dropZone[0].ondrop = function(event) {
+                event.preventDefault();
+                dropZone.removeClass('hover');
+                dropZone.addClass('drop');
+                $.each(event.dataTransfer.files, (function(file){var xhr = new XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', uploadProgress, false);
+                    xhr.onreadystatechange = stateChange;
+                    xhr.open('POST', '/upload.php');
+                    xhr.setRequestHeader('X-FILE-NAME', file.name);
+                    xhr.send(file);
+                }));
+            };
+        });
+    </script>
+  </body>
+</html>

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import *
 import datetime
-
+from PIL import Image
 
 class UnixEpochDateField(serializers.DateTimeField):
     def to_representation(self, value):
@@ -52,20 +52,25 @@ class FeedSerializer(serializers.ModelSerializer):
     updated = UnixEpochDateField()
     user = UserSerializer()
     comments = CommentSerializer(source="comment_set", many=True)
+    thumb = serializers.ImageField(source="get_thumb")
 
     class Meta:
         model = Post
-        fields = ('id', 'thumb', 'origin', 'created', 'updated', 'likes_count', 'user', 'comments')
+        fields = ('id', 'body', 'thumb', 'origin', 'created', 'updated', 'likes_count', 'user', 'comments')
         depth = 1
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('origin',)
+        fields = ('origin', 'body')
 
     def create(self, validated_data):
-        validated_data['thumb'] = validated_data['origin']
         validated_data['user'] = validated_data['user']
-        print(validated_data)
         return Post.objects.create(**validated_data)
+
+
+class TemplatesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Template
+        fields = ('origin', 'name', 'id')
